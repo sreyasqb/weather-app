@@ -4,19 +4,44 @@ import 'package:vishwa_test/components/row_data.dart';
 import 'package:vishwa_test/components/time_weather.dart';
 import 'package:vishwa_test/components/week_weather.dart';
 import 'package:weather_icons/weather_icons.dart';
+import 'package:http/http.dart' as http;
 
 class WeatherPage extends StatefulWidget {
+  String city;
+  String image;
+  WeatherPage({required this.city,required this.image});
   @override
   _WeatherPageState createState() => _WeatherPageState();
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  String city="Prague";
+  // String city="Prague";
+  // String image=this.image;
   int weather=6;
   String description='Partly cloudy';
   String sunrise="06:51";
   String sunset="18:45";
   int rainPercentage=10,humidity=72,wind=34,precipitation=0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("hi");
+    getInfo();
+    print("bye");
+
+  }
+  void getInfo() async {
+    
+      http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=Coimbatore&appid=d6ea61dc7abbaa7a34606beff25b1a7b"),
+      
+      );
+      print(response.body);
+      
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +64,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(bottomRight: Radius.circular(30),bottomLeft: Radius.circular(30)),
                     image:DecorationImage(
-                      image:AssetImage('assets/night.jpg'),
+                      image:AssetImage(widget.image),
                       fit:BoxFit.cover,
                     )
                   ),
@@ -50,7 +75,7 @@ class _WeatherPageState extends State<WeatherPage> {
                       Container(
                         height: screenheight*0.1,
                         child: AutoSizeText(
-                          city,
+                          widget.city,
                           presetFontSizes: [30,28,26,24,22],
                           style: TextStyle(
                             fontWeight: FontWeight.w500,

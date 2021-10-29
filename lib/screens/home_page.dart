@@ -4,6 +4,9 @@ import 'package:vishwa_test/components/weather_card.dart';
 import 'package:vishwa_test/screens/weather_page.dart';
 import 'package:weather_icons/weather_icons.dart';
 
+
+List <String> cities=["Prague","Coimbatore","Chennai"];
+
 class HomePage extends StatefulWidget {
   
 
@@ -27,20 +30,20 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                WeatherCard(city: "Prague", image: "assets/night.jpg", maxTemp: 11, minTemp: 6,weatherIcon:Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:screenheight*0.03),
+                WeatherCard(city: cities[0], image: "assets/night.jpg", maxTemp: 11, minTemp: 6,weatherIcon:Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:screenheight*0.03),
                   onPress: (){
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WeatherPage()));
+                            builder: (context) => WeatherPage(city:cities[0],image:"assets/night.jpg")));
                   },
                 ),
-                WeatherCard(city: "Coimbatore", image: "assets/day.jpg", maxTemp: 28, minTemp: 22,weatherIcon:Icon(WeatherIcons.day_storm_showers,color: Colors.black,size:screenheight*0.03),
+                WeatherCard(city: cities[1], image: "assets/day.jpg", maxTemp: 28, minTemp: 22,weatherIcon:Icon(WeatherIcons.day_storm_showers,color: Colors.black,size:screenheight*0.03),
                   onPress: (){
                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WeatherPage()));
+                            builder: (context) => WeatherPage(city:cities[1],image:"assets/day.jpg")));
                   },
                 ),
                 
@@ -49,8 +52,13 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                WeatherCard(city: "Chennai", image: "assets/day.jpg", maxTemp: 32, minTemp: 30,weatherIcon:Icon(WeatherIcons.day_sunny,color: Colors.black,size:screenheight*0.03),
-                  onPress: (){},
+                WeatherCard(city: cities[2], image: "assets/day.jpg", maxTemp: 32, minTemp: 30,weatherIcon:Icon(WeatherIcons.day_sunny,color: Colors.black,size:screenheight*0.03),
+                  onPress: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WeatherPage(city:cities[2],image:"assets/day.jpg")));
+                  },
                 ),
                 AddWeatherCard(
                   onPress: (){},
