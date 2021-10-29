@@ -1,23 +1,27 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vishwa_test/components/row_data.dart';
 import 'package:vishwa_test/components/time_weather.dart';
 import 'package:vishwa_test/components/week_weather.dart';
+import 'package:vishwa_test/models/city.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherPage extends StatefulWidget {
-  String city;
-  String image;
-  WeatherPage({required this.city,required this.image});
+  City city;
+  WeatherPage({required this.city});
   @override
-  _WeatherPageState createState() => _WeatherPageState();
+  _WeatherPageState createState() => _WeatherPageState(city);
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  // String city="Prague";
-  // String image=this.image;
-  int weather=6;
+  City city;
+  _WeatherPageState(this.city);
+  int weather=0;
+  int feelsLike=0;
   String description='Partly cloudy';
   String sunrise="06:51";
   String sunset="18:45";
@@ -26,18 +30,28 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   void initState() {
     // TODO: implement initState
+    
     super.initState();
-    print("hi");
+    print(city.sunrise);
+    print(city.sunset);
+    // print(DateFormat('hh:mm a').format(city.sunrise));
+
     getInfo();
-    print("bye");
+
 
   }
   void getInfo() async {
     
-      http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=Coimbatore&appid=d6ea61dc7abbaa7a34606beff25b1a7b"),
+      // http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=$city&appid=d6ea61dc7abbaa7a34606beff25b1a7b"),
       
-      );
-      print(response.body);
+      // );
+      // Map dataJson= jsonDecode(response.body);
+      // print(dataJson);
+      // setState(() {
+      //   weather=(dataJson['main']['temp']-273.15).round();
+      //   feelsLike=(dataJson['main']['feels_like']-273.15).round();
+      // });
+      
       
 
   }
@@ -64,7 +78,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(bottomRight: Radius.circular(30),bottomLeft: Radius.circular(30)),
                     image:DecorationImage(
-                      image:AssetImage(widget.image),
+                      image:AssetImage(city.image),
                       fit:BoxFit.cover,
                     )
                   ),
@@ -75,7 +89,7 @@ class _WeatherPageState extends State<WeatherPage> {
                       Container(
                         height: screenheight*0.1,
                         child: AutoSizeText(
-                          widget.city,
+                          city.name,
                           presetFontSizes: [30,28,26,24,22],
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -88,7 +102,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         height:screenheight*0.15,
                         child: AutoSizeText(
                           
-                          " "+weather.toString()+"\u00B0",
+                          " "+city.temp.toString()+"\u00B0",
                           presetFontSizes: [100,90,80,70],
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -100,7 +114,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         height:screenheight*0.05,
                         child: AutoSizeText(
                           
-                          description,
+                          city.description,
                           presetFontSizes: [20,18,16,14],
                           style: TextStyle(
                             fontWeight: FontWeight.w300,
@@ -112,7 +126,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         height:screenheight*0.05,
                         child: AutoSizeText(
                           
-                          "Feels like 4\u00B0",
+                          "Feels like ${city.feelsLike}\u00B0",
                           presetFontSizes: [16,14,12,10],
                           style: TextStyle(
                             fontWeight: FontWeight.w300,
@@ -163,19 +177,19 @@ class _WeatherPageState extends State<WeatherPage> {
                   color: Colors.grey,
                 ),
                 SizedBox(height:screenheight*0.02),
-                RowData(text1:"SUNRISE",data1:sunrise,text2:"SUNSET",data2:sunset),
+                RowData(text1:"SUNRISE",data1:DateFormat('hh:mm a').format(city.sunrise),text2:"SUNSET",data2:DateFormat('hh:mm a').format(city.sunset)),
                 Divider(
                   indent:screenwidth*0.1,
                   endIndent:screenwidth*0.1,
                   color: Colors.grey,
                 ),
-                RowData(text1:"CHANCE OF RAIN (%)",data1:rainPercentage.toString(),text2:"HUMIDITY (%)",data2:humidity.toString(),),
+                RowData(text1:"CHANCE OF RAIN (%)",data1:city.rainPercentage.toString(),text2:"HUMIDITY (%)",data2:city.humidity.toString(),),
                 Divider(
                   indent:screenwidth*0.1,
                   endIndent:screenwidth*0.1,
                   color: Colors.grey,
                 ),
-                RowData(text1:"WIND (km/hour)",data1:wind.toString(),text2:"PRECIPITAION (cm)",data2:precipitation.toString(),),
+                RowData(text1:"WIND (km/hour)",data1:city.wind.toString(),text2:"PRECIPITAION (cm)",data2:city.precipitation.toString(),),
                 Divider(
                   indent:screenwidth*0.1,
                   endIndent:screenwidth*0.1,

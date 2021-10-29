@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:vishwa_test/components/add_weather_card.dart';
 import 'package:vishwa_test/components/weather_card.dart';
+import 'package:vishwa_test/models/city.dart';
 import 'package:vishwa_test/screens/weather_page.dart';
 import 'package:weather_icons/weather_icons.dart';
+import 'package:http/http.dart' as http;
 
 
-List <String> cities=["Prague","Coimbatore","Chennai"];
+List <City> cities=[];
+List <String> namesOfCities=["Prague","Coimbatore","Chennai",];
 
 class HomePage extends StatefulWidget {
   
@@ -15,7 +20,56 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+    for (String city in namesOfCities) {
+      getInfo(city);
+    }
+    
+  }
+
+  void getInfo(String city) async {
+    http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=$city&appid=d6ea61dc7abbaa7a34606beff25b1a7b"),
+      
+      );
+      Map dataJson= jsonDecode(response.body);
+      // print(dataJson['sys']['sunrise']);
+      // print(DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunrise']*1000));
+      // print(DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunset']*1000));
+      
+      //print(dataJson);
+      setState(() {
+        cities.add(
+          City(
+            name: city,
+            temp:(dataJson["main"]["temp"]-273.15).round(),
+            minTemp: (dataJson["main"]["temp_min"]-273.15).round(),
+            maxTemp: (dataJson["main"]["temp_max"]-273.15).round(),
+            
+            weatherIcon:Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:30),
+            feelsLike: (dataJson["main"]["feels_like"]-273.15).round(),
+            description: dataJson["weather"][0]["description"],
+            sunrise: DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunrise']*1000),
+            sunset: DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunset']*1000),
+            image: "assets/day.jpg",
+            humidity: dataJson['main']['humidity'],
+            wind: (dataJson["wind"]["speed"]*1.6).round(),
+            precipitation: 0,
+            rainPercentage: 0,
+            // timeZone: DateTimedataJson['timezone']
+            // rainPercentage: 
+
+          )
+        );
+      });
+  }
+
+  @override
+  
   Widget build(BuildContext context) {
     double screenwidth = MediaQuery.of(context).size.width;
     double screenheight = MediaQuery.of(context).size.height;
@@ -26,24 +80,24 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.symmetric(horizontal: screenwidth*0.02,vertical:screenheight*0.04),
         child:Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: cities!=[] ? [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                WeatherCard(city: cities[0], image: "assets/night.jpg", maxTemp: 11, minTemp: 6,weatherIcon:Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:screenheight*0.03),
+                WeatherCard(city: cities[0],
                   onPress: (){
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WeatherPage(city:cities[0],image:"assets/night.jpg")));
+                            builder: (context) => WeatherPage(city:cities[0])));
                   },
                 ),
-                WeatherCard(city: cities[1], image: "assets/day.jpg", maxTemp: 28, minTemp: 22,weatherIcon:Icon(WeatherIcons.day_storm_showers,color: Colors.black,size:screenheight*0.03),
+                WeatherCard(city: cities[1],
                   onPress: (){
                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WeatherPage(city:cities[1],image:"assets/day.jpg")));
+                            builder: (context) => WeatherPage(city:cities[1])));
                   },
                 ),
                 
@@ -52,12 +106,12 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                WeatherCard(city: cities[2], image: "assets/day.jpg", maxTemp: 32, minTemp: 30,weatherIcon:Icon(WeatherIcons.day_sunny,color: Colors.black,size:screenheight*0.03),
+                WeatherCard(city: cities[2],
                   onPress: (){
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WeatherPage(city:cities[2],image:"assets/day.jpg")));
+                            builder: (context) => WeatherPage(city:cities[2])));
                   },
                 ),
                 AddWeatherCard(
@@ -65,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             )
-          ],
+          ] : [],
         )
       ),
     );

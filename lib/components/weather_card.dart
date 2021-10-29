@@ -1,13 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:vishwa_test/models/city.dart';
 import 'package:vishwa_test/screens/weather_page.dart';
 class WeatherCard extends StatelessWidget {
-  String city;
-  String image;
-  int maxTemp,minTemp;
-  Icon weatherIcon;
+  City city;
   Function onPress;
-  WeatherCard({required this.city,required this.image,required this.maxTemp,required this.minTemp,required this.weatherIcon,required this.onPress});
+  WeatherCard({required this.city,required this.onPress});
 
 
   @override
@@ -26,7 +24,7 @@ class WeatherCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           image:DecorationImage(
-            image:AssetImage(image),
+            image:AssetImage(city.image),
             fit:BoxFit.cover,
           )
         ),
@@ -37,7 +35,7 @@ class WeatherCard extends StatelessWidget {
             Container(
               height: screenheight*0.05,
               child: AutoSizeText(
-                city,
+                city.name,
                 presetFontSizes: [30,28,26,24,22],
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
@@ -51,7 +49,7 @@ class WeatherCard extends StatelessWidget {
               radius:screenheight*0.04,
               backgroundColor: Colors.grey[200],
               child:Center(
-                child:weatherIcon,
+                child:city.weatherIcon,
               )
             ),
             Container(
@@ -62,7 +60,7 @@ class WeatherCard extends StatelessWidget {
                   Container(
                     height:screenheight*0.05,
                     child:AutoSizeText(
-                      maxTemp.toString()+"\u00B0",
+                      city.maxTemp.toString()+"\u00B0",
                       presetFontSizes: [28,26,24,22],
                       style: TextStyle(
                         color:Colors.white,
@@ -74,7 +72,7 @@ class WeatherCard extends StatelessWidget {
                   Container(
                     height:screenheight*0.05,
                     child:AutoSizeText(
-                      minTemp.toString()+"\u00B0",
+                      city.minTemp.toString()+"\u00B0",
                       presetFontSizes: [28,26,24,22],
                       style: TextStyle(
                         color:Colors.grey,
