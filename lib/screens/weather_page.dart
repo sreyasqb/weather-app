@@ -52,7 +52,7 @@ class _WeatherPageState extends State<WeatherPage> {
       
      
       Map dataJson= jsonDecode(response.body);
-      // print(dataJson);
+      print(dataJson);
       var weatherList=dataJson['list'];
       
       for (int i = 0 ;i<24-timeNow.hour;i++){
@@ -169,11 +169,11 @@ class _WeatherPageState extends State<WeatherPage> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                    children: hourly!=[]? [
-                      TimeWeather(hourly: hourly[0],),
-                      
+                    children: 
+                      hourly!=[]? 
+                      hourly.map((hour)=>TimeWeather(hourly: hour)).toList():[],
                       // TimeWeather(time: 12, temperature: 2, weatherIcon: Icon(WeatherIcons.night_alt_rain_wind,color: Colors.black,size:screenheight*0.03)),
-                      ]:[],
+                      
                     )
                   ),
                 ),

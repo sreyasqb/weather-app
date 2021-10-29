@@ -1,12 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:vishwa_test/models/hourly_weather.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class TimeWeather extends StatelessWidget {
-  int time;
-  int temperature;
-  Icon weatherIcon;
-  TimeWeather({required this.time,required this.temperature,required this.weatherIcon});
+  HourlyWeather hourly;
+  TimeWeather({required this.hourly});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class TimeWeather extends StatelessWidget {
             height:screenheight*0.02,
             child: AutoSizeText(
               
-              time/12 <1 ? "$time AM" :"${time%12} PM",
+              DateFormat('hh a').format(hourly.time),
               presetFontSizes: [16,14,12,10],
               style: TextStyle(
                 color:Colors.grey,
@@ -34,7 +34,7 @@ class TimeWeather extends StatelessWidget {
           
           CircleAvatar(
             radius: screenwidth*0.06,
-            child:Center(child: weatherIcon),
+            child:Center(child: hourly.weatherIcon),
             backgroundColor: Colors.grey[200],
           ),
           SizedBox(height: screenheight*0.01,),
@@ -42,7 +42,7 @@ class TimeWeather extends StatelessWidget {
             height:screenheight*0.04,
             child: AutoSizeText(
               
-              "${temperature.toString()}"+"\u00B0",
+              "${hourly.temp.toString()}"+"\u00B0",
               presetFontSizes: [22,20,18,16],
               style: TextStyle(
                 color:Colors.black,
