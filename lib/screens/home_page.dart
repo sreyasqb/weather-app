@@ -10,7 +10,8 @@ import 'package:http/http.dart' as http;
 
 
 List <City> cities=[];
-List <String> namesOfCities=["Prague","Coimbatore","Chennai",];
+List <String> namesOfCities=["Brazil","Coimbatore","Chennai",];
+DateTime timeNow=DateTime.now();
 
 class HomePage extends StatefulWidget {
   
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    
     
     for (String city in namesOfCities) {
       getInfo(city);
@@ -43,6 +45,9 @@ class _HomePageState extends State<HomePage> {
       
       //print(dataJson);
       setState(() {
+        DateTime sunrise=DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunrise']*1000);
+        DateTime sunset=DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunset']*1000);
+        // print("${sunset.compareTo(timeNow)<0} , $sunset , $timeNow");
         cities.add(
           City(
             name: city,
@@ -53,14 +58,15 @@ class _HomePageState extends State<HomePage> {
             weatherIcon:Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:30),
             feelsLike: (dataJson["main"]["feels_like"]-273.15).round(),
             description: dataJson["weather"][0]["description"],
-            sunrise: DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunrise']*1000),
-            sunset: DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunset']*1000),
-            image: "assets/day.jpg",
+            sunrise: sunrise,
+            sunset: sunset,
+            image: sunset.compareTo(timeNow)<0? "assets/night.jpg" :"assets/day.jpg",
             humidity: dataJson['main']['humidity'],
             wind: (dataJson["wind"]["speed"]*1.6).round(),
             precipitation: 0,
             rainPercentage: 0,
-            // timeZone: DateTimedataJson['timezone']
+            timeZone: dataJson['timezone'],
+
             // rainPercentage: 
 
           )

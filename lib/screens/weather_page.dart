@@ -7,8 +7,11 @@ import 'package:vishwa_test/components/row_data.dart';
 import 'package:vishwa_test/components/time_weather.dart';
 import 'package:vishwa_test/components/week_weather.dart';
 import 'package:vishwa_test/models/city.dart';
+import 'package:vishwa_test/models/hourly_weather.dart' ;
+import 'package:vishwa_test/screens/home_page.dart' show timeNow;
 import 'package:weather_icons/weather_icons.dart';
 import 'package:http/http.dart' as http;
+
 
 class WeatherPage extends StatefulWidget {
   City city;
@@ -18,6 +21,7 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
+  List <HourlyWeather> hourly=[];
   City city;
   _WeatherPageState(this.city);
   int weather=0;
@@ -32,9 +36,11 @@ class _WeatherPageState extends State<WeatherPage> {
     // TODO: implement initState
     
     super.initState();
-    print(city.sunrise);
-    print(city.sunset);
+    print(timeNow.hour);
+    // print(city.sunrise);
+    // print(city.sunset);
     // print(DateFormat('hh:mm a').format(city.sunrise));
+    
 
     getInfo();
 
@@ -42,16 +48,20 @@ class _WeatherPageState extends State<WeatherPage> {
   }
   void getInfo() async {
     
-      // http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=$city&appid=d6ea61dc7abbaa7a34606beff25b1a7b"),
+      http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/forecast?q=${city.name}&mode=json&appid=d6ea61dc7abbaa7a34606beff25b1a7b"));
       
-      // );
-      // Map dataJson= jsonDecode(response.body);
+     
+      Map dataJson= jsonDecode(response.body);
       // print(dataJson);
-      // setState(() {
-      //   weather=(dataJson['main']['temp']-273.15).round();
-      //   feelsLike=(dataJson['main']['feels_like']-273.15).round();
-      // });
+      var weatherList=dataJson['list'];
       
+      for (int i = 0 ;i<24-timeNow.hour;i++){
+        setState(() {
+          hourly.add(HourlyWeather(time: DateTime.fromMillisecondsSinceEpoch(weatherList[i]['dt']*1000), weatherIcon: Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:30), temp: (weatherList[i]['temp']-273.15).round()));
+        });
+      }
+      print(hourly.length);
+
       
 
   }
@@ -159,15 +169,11 @@ class _WeatherPageState extends State<WeatherPage> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                    children: [
-                      TimeWeather(time: 18, temperature: 4, weatherIcon: Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:screenheight*0.03)),
-                      TimeWeather(time: 19, temperature: 4, weatherIcon: Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:screenheight*0.03)),
-                      TimeWeather(time: 20, temperature: 3, weatherIcon: Icon(WeatherIcons.night_alt_lightning,color: Colors.black,size:screenheight*0.03)),
-                      TimeWeather(time: 21, temperature: 2, weatherIcon: Icon(WeatherIcons.night_alt_rain_mix,color: Colors.black,size:screenheight*0.03)),
-                      TimeWeather(time: 22, temperature: 2, weatherIcon: Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:screenheight*0.03)),
-                      TimeWeather(time: 23, temperature: 2, weatherIcon: Icon(WeatherIcons.night_alt_showers,color: Colors.black,size:screenheight*0.03)),
+                    children: hourly!=[]? [
+                      TimeWeather(hourly: hourly[0],),
+                      
                       // TimeWeather(time: 12, temperature: 2, weatherIcon: Icon(WeatherIcons.night_alt_rain_wind,color: Colors.black,size:screenheight*0.03)),
-                      ]
+                      ]:[],
                     )
                   ),
                 ),
