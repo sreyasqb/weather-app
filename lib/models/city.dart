@@ -14,9 +14,10 @@ class City{
   int rainPercentage;
   int humidity;
   int wind;
-  int precipitation;
-  int timeZone;
-  City({required this.name,required this.image,required this.temp,required this.minTemp,required this.maxTemp,required this.weatherIcon,required this.feelsLike,required this.description,required this.sunset,required this.sunrise,required this.rainPercentage,required this.humidity,required this.wind,required this.precipitation,required this.timeZone
+  double precipitation;
+  DateTime localTime;
+  int timezone;
+  City({required this.name,required this.image,required this.temp,required this.minTemp,required this.maxTemp,required this.weatherIcon,required this.feelsLike,required this.description,required this.sunset,required this.sunrise,required this.rainPercentage,required this.humidity,required this.wind,required this.precipitation,required this.localTime,required this.timezone
   });
 
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vishwa_test/components/constants.dart';
 import 'package:vishwa_test/components/row_data.dart';
 import 'package:vishwa_test/components/time_weather.dart';
 import 'package:vishwa_test/components/week_weather.dart';
@@ -36,13 +37,14 @@ class _WeatherPageState extends State<WeatherPage> {
     // TODO: implement initState
     
     super.initState();
-    print(timeNow.hour);
+    // print(timeNow.hour);
     // print(city.sunrise);
     // print(city.sunset);
     // print(DateFormat('hh:mm a').format(city.sunrise));
     
 
     getInfo();
+    // print(hourly);
 
 
   }
@@ -52,15 +54,28 @@ class _WeatherPageState extends State<WeatherPage> {
       
      
       Map dataJson= jsonDecode(response.body);
-      print(dataJson);
+      // print(dataJson);
       var weatherList=dataJson['list'];
+      // print(weatherList);
+      // print(DateTime);
       
-      for (int i = 0 ;i<24-timeNow.hour;i++){
+      
+      
+      for (int i = 0 ;i<24-city.localTime.hour;i++){
+        int testTime=weatherList[i]['dt']*1000;
+        DateTime predHours=DateTime.fromMillisecondsSinceEpoch((city.timezone-indiaTimeZone)*1000+testTime);
+        if (DateTime(city.localTime.year, city.localTime.month, city.localTime.day).difference(DateTime(predHours.year, predHours.month, predHours.day)).inDays<0){
+          break;
+        }
         setState(() {
-          hourly.add(HourlyWeather(time: DateTime.fromMillisecondsSinceEpoch(weatherList[i]['dt']*1000), weatherIcon: Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:30), temp: (weatherList[i]['temp']-273.15).round()));
+          hourly.add(HourlyWeather(time: predHours, weatherIcon: Icon(WeatherIcons.night_alt_cloudy,color: Colors.black,size:30), temp: (weatherList[i]['main']['temp']-273.15).round()));
         });
+
       }
-      print(hourly.length);
+      // print(hourly.length);
+
+      // print(hourly);
+      
 
       
 
@@ -78,6 +93,7 @@ class _WeatherPageState extends State<WeatherPage> {
           
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               
               children: [
                 Container(
@@ -169,6 +185,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                     children: 
                       hourly!=[]? 
                       hourly.map((hour)=>TimeWeather(hourly: hour)).toList():[],
@@ -195,7 +212,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   endIndent:screenwidth*0.1,
                   color: Colors.grey,
                 ),
-                RowData(text1:"WIND (km/hour)",data1:city.wind.toString(),text2:"PRECIPITAION (cm)",data2:city.precipitation.toString(),),
+                RowData(text1:"WIND (km/hour)",data1:city.wind.toString(),text2:"PRECIPITAION (mm)",data2:city.precipitation.toString(),),
                 Divider(
                   indent:screenwidth*0.1,
                   endIndent:screenwidth*0.1,

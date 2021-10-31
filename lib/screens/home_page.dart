@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:vishwa_test/components/add_weather_card.dart';
+import 'package:vishwa_test/components/constants.dart';
 import 'package:vishwa_test/components/weather_card.dart';
 import 'package:vishwa_test/models/city.dart';
 import 'package:vishwa_test/screens/weather_page.dart';
@@ -10,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 
 List <City> cities=[];
-List <String> namesOfCities=["Brazil","Coimbatore","Chennai",];
+List <String> namesOfCities=["Brasilia ","Coimbatore","Chennai",];
 DateTime timeNow=DateTime.now();
 
 class HomePage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     
+    // print(timeNow.toUtc().millisecondsSinceEpoch);
     
     for (String city in namesOfCities) {
       getInfo(city);
@@ -44,10 +46,17 @@ class _HomePageState extends State<HomePage> {
       // print(DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunset']*1000));
       
       //print(dataJson);
+      // print("${dataJson['timezone']} $indiaTimeZone");
+      
+      DateTime localTime=DateTime.fromMillisecondsSinceEpoch((dataJson['timezone']-indiaTimeZone)*1000+timeNow.toUtc().millisecondsSinceEpoch);
+      DateTime sunrise=DateTime.fromMillisecondsSinceEpoch((dataJson['timezone']-indiaTimeZone)*1000 + dataJson['sys']['sunrise']*1000);
+      DateTime sunset=DateTime.fromMillisecondsSinceEpoch((dataJson['timezone']-indiaTimeZone)*1000 +dataJson['sys']['sunset']*1000);
+      // print("$sunset - $sunrise - $localTime");
       setState(() {
-        DateTime sunrise=DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunrise']*1000);
-        DateTime sunset=DateTime.fromMillisecondsSinceEpoch(dataJson['sys']['sunset']*1000);
-        // print("${sunset.compareTo(timeNow)<0} , $sunset , $timeNow");
+        
+        
+        
+        // print("${sunset.compareTo(localTime)>0 && sunrise.compareTo(localTime)<0}");
         cities.add(
           City(
             name: city,
@@ -60,12 +69,13 @@ class _HomePageState extends State<HomePage> {
             description: dataJson["weather"][0]["description"],
             sunrise: sunrise,
             sunset: sunset,
-            image: sunset.compareTo(timeNow)<0? "assets/night.jpg" :"assets/day.jpg",
+            image: sunset.compareTo(localTime)>0 && sunrise.compareTo(localTime)<0? "assets/day.jpg" :"assets/night.jpg",
             humidity: dataJson['main']['humidity'],
             wind: (dataJson["wind"]["speed"]*1.6).round(),
-            precipitation: 0,
+            precipitation:0,
             rainPercentage: 0,
-            timeZone: dataJson['timezone'],
+            localTime: localTime,
+            timezone: dataJson['timezone'],
 
             // rainPercentage: 
 
