@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:vishwa_test/components/add_weather_card.dart';
@@ -11,8 +12,9 @@ import 'package:http/http.dart' as http;
 
 
 List <City> cities=[];
-List <String> namesOfCities=["Brasilia ","Coimbatore","Chennai",];
+List <String> namesOfCities=["Prague","Coimbatore","Chennai",];
 DateTime timeNow=DateTime.now();
+int index=0;
 
 class HomePage extends StatefulWidget {
   
@@ -27,10 +29,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("hi");
     
     // print(timeNow.toUtc().millisecondsSinceEpoch);
     
     for (String city in namesOfCities) {
+      
       getInfo(city);
     }
     
@@ -52,6 +56,8 @@ class _HomePageState extends State<HomePage> {
       DateTime sunrise=DateTime.fromMillisecondsSinceEpoch((dataJson['timezone']-indiaTimeZone)*1000 + dataJson['sys']['sunrise']*1000);
       DateTime sunset=DateTime.fromMillisecondsSinceEpoch((dataJson['timezone']-indiaTimeZone)*1000 +dataJson['sys']['sunset']*1000);
       // print("$sunset - $sunrise - $localTime");
+      // double prec=dataJson['rain']['rain.3h']!=null?dataJson['rain']['rain.3h'] : 0;
+      // print(dataJson['rain']['rain.1h']);
       setState(() {
         
         
@@ -82,7 +88,11 @@ class _HomePageState extends State<HomePage> {
           )
         );
       });
+      print(cities.length);
   }
+  
+
+  TextEditingController controller = TextEditingController();
 
   @override
   
@@ -90,6 +100,7 @@ class _HomePageState extends State<HomePage> {
     double screenwidth = MediaQuery.of(context).size.width;
     double screenheight = MediaQuery.of(context).size.height;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.blueGrey[900],
       body: Container(
         height:screenheight,
@@ -131,7 +142,86 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
                 AddWeatherCard(
-                  onPress: (){},
+                  onPress: ()=>showDialog(
+                    context: context,
+                    builder: (context){
+                      return BackdropFilter(
+                        filter:ImageFilter.blur(sigmaX: 6,sigmaY: 6),
+                        child: AlertDialog(
+                          insetPadding:EdgeInsets.only(bottom: screenheight*0.3),
+                          backgroundColor:Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                          
+                          content:Container(
+                            height: screenheight*0.2,
+                            color:Colors.transparent,
+                            child: Column(
+                              
+                              children: [
+                                Container(
+                                  width: screenwidth*0.8,
+                                  height:screenheight*0.08,
+                                  
+                                  decoration:BoxDecoration(
+                                    color:Colors.blueGrey[900],
+                                    borderRadius:BorderRadius.circular(20),
+
+                                  ),
+                                  
+                                  padding:EdgeInsets.only(top:screenheight*0.01),
+                                  child:TextField(
+                                    controller:controller,
+                                    textAlign:TextAlign.center,
+                                    textCapitalization: TextCapitalization.characters,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'City',
+                                      // prefixIcon:Icon(Icons.search,size:screenheight*0.04,color:Colors.white),
+                                      // prefixIconConstraints: BoxConstraints(),
+                                      hintStyle:TextStyle(
+                                        color:Colors.grey,
+                                      )
+                                    ),
+                                    style:TextStyle(
+                                      color:Colors.white,
+                                      fontSize:20,
+                                      
+                                    )
+                                  )
+                                ),
+                                SizedBox(height:screenheight*0.02),
+                                InkWell(
+                                  onTap:(){
+                                    setState(() {
+                                      namesOfCities.add(controller.text);
+                                      namesOfCities.removeAt(0);
+                                      cities.removeAt(0);
+                                      getInfo(controller.text);
+                                      
+
+
+                                      
+
+                                    });
+                                  },
+                                  child: CircleAvatar(
+                                    radius: screenheight*0.03,
+                                    backgroundColor:Colors.blueGrey[900],
+                                    child:Center(
+                                      child:Icon(Icons.search)
+                                    )
+                                    
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ),
+                      );
+                    }
+
+                  )
                 ),
               ],
             )

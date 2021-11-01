@@ -206,7 +206,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   endIndent:screenwidth*0.1,
                   color: Colors.grey,
                 ),
-                RowData(text1:"CHANCE OF RAIN (%)",data1:city.rainPercentage.toString(),text2:"HUMIDITY (%)",data2:city.humidity.toString(),),
+                RowData(text1:"Local Time",data1:DateFormat('hh:mm a').format(city.localTime),text2:"HUMIDITY (%)",data2:city.humidity.toString(),),
                 Divider(
                   indent:screenwidth*0.1,
                   endIndent:screenwidth*0.1,
