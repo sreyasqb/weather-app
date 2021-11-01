@@ -2,7 +2,7 @@
     package="com.example.vishwa_test">
     
    <application
-        android:label="vishwa_test"
+        android:label="WeatherApp"
         android:icon="@mipmap/ic_launcher">
         
         <activity

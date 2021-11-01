@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 
 List <City> cities=[];
-List <String> namesOfCities=["Prague","Coimbatore","Chennai",];
+List <String> namesOfCities=["Prague","Coimbatore","Chennai","Bangalore"];
 DateTime timeNow=DateTime.now();
 int index=0;
 
@@ -141,92 +141,105 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => WeatherPage(city:cities[2])));
                   },
                 ),
-                AddWeatherCard(
-                  onPress: ()=>showDialog(
-                    context: context,
-                    builder: (context){
-                      return BackdropFilter(
-                        filter:ImageFilter.blur(sigmaX: 6,sigmaY: 6),
-                        child: AlertDialog(
-                          insetPadding:EdgeInsets.only(bottom: screenheight*0.3),
-                          backgroundColor:Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                          
-                          content:Container(
-                            height: screenheight*0.2,
-                            color:Colors.transparent,
-                            child: Column(
-                              
-                              children: [
-                                Container(
-                                  width: screenwidth*0.8,
-                                  height:screenheight*0.08,
-                                  
-                                  decoration:BoxDecoration(
-                                    color:Colors.blueGrey[900],
-                                    borderRadius:BorderRadius.circular(20),
-
-                                  ),
-                                  
-                                  padding:EdgeInsets.only(top:screenheight*0.01),
-                                  child:TextField(
-                                    controller:controller,
-                                    textAlign:TextAlign.center,
-                                    textCapitalization: TextCapitalization.characters,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: 'City',
-                                      // prefixIcon:Icon(Icons.search,size:screenheight*0.04,color:Colors.white),
-                                      // prefixIconConstraints: BoxConstraints(),
-                                      hintStyle:TextStyle(
-                                        color:Colors.grey,
-                                      )
-                                    ),
-                                    style:TextStyle(
-                                      color:Colors.white,
-                                      fontSize:20,
-                                      
-                                    )
-                                  )
-                                ),
-                                SizedBox(height:screenheight*0.02),
-                                InkWell(
-                                  onTap:(){
-                                    setState(() {
-                                      namesOfCities.add(controller.text);
-                                      namesOfCities.removeAt(0);
-                                      cities.removeAt(0);
-                                      getInfo(controller.text);
-                                      
-
-
-                                      
-
-                                    });
-                                  },
-                                  child: CircleAvatar(
-                                    radius: screenheight*0.03,
-                                    backgroundColor:Colors.blueGrey[900],
-                                    child:Center(
-                                      child:Icon(Icons.search)
-                                    )
-                                    
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ),
-                      );
-                    }
-
-                  )
+                WeatherCard(city: cities[3],
+                  onPress: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WeatherPage(city:cities[3])));
+                  },
                 ),
+                
               ],
             )
           ] : [],
         )
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blueGrey[900],
+        onPressed: ()=>showDialog(
+            context: context,
+            builder: (context){
+              return BackdropFilter(
+                filter:ImageFilter.blur(sigmaX: 6,sigmaY: 6),
+                child: AlertDialog(
+                  insetPadding:EdgeInsets.only(bottom: screenheight*0.3),
+                  backgroundColor:Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                  
+                  content:Container(
+                    height: screenheight*0.2,
+                    color:Colors.transparent,
+                    child: Column(
+                      
+                      children: [
+                        Container(
+                          width: screenwidth*0.8,
+                          height:screenheight*0.08,
+                          
+                          decoration:BoxDecoration(
+                            color:Colors.blueGrey[900],
+                            borderRadius:BorderRadius.circular(20),
+
+                          ),
+                          
+                          padding:EdgeInsets.only(top:screenheight*0.01),
+                          child:TextField(
+                            controller:controller,
+                            textAlign:TextAlign.center,
+                            textCapitalization: TextCapitalization.characters,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'City',
+                              // prefixIcon:Icon(Icons.search,size:screenheight*0.04,color:Colors.white),
+                              // prefixIconConstraints: BoxConstraints(),
+                              hintStyle:TextStyle(
+                                color:Colors.grey,
+                              )
+                            ),
+                            style:TextStyle(
+                              color:Colors.white,
+                              fontSize:20,
+                              
+                            )
+                          )
+                        ),
+                        SizedBox(height:screenheight*0.02),
+                        InkWell(
+                          onTap:(){
+                            setState(() {
+                              namesOfCities.add(controller.text);
+                              namesOfCities.removeAt(0);
+                              cities.removeAt(0);
+                              getInfo(controller.text);
+                              
+
+
+                              
+
+                            });
+                          },
+                          child: CircleAvatar(
+                            radius: screenheight*0.03,
+                            backgroundColor:Colors.blueGrey[900],
+                            child:Center(
+                              child:Icon(Icons.search)
+                            )
+                            
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ),
+              );
+            }
+
+          ),
+        child:Icon(Icons.add)
+
+
       ),
     );
   }
